@@ -1,0 +1,5 @@
+2023-10-09 14:19:06.241 INFO  c.esr.EmployeeSkillRatingApplication - send mail details com.esr.Entity.EmailHistory@4d28425e
+2023-10-09 14:19:18.996 INFO  c.esr.EmployeeSkillRatingApplication - send mail details com.esr.Entity.EmailHistory@46b26827
+2023-10-09 14:19:31.518 INFO  c.esr.EmployeeSkillRatingApplication - send mail details com.esr.Entity.EmailHistory@527d5319
+2023-10-09 14:19:43.929 INFO  c.esr.EmployeeSkillRatingApplication - send mail details com.esr.Entity.EmailHistory@15faec11
+2023-10-09 14:19:56.852 INFO  c.esr.EmployeeSkillRatingApplication - send mail details com.esr.Entity.EmailHistory@66cd7f89

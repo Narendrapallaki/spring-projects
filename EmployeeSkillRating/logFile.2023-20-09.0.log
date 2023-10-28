@@ -1,0 +1,8 @@
+2023-10-09 14:20:09.374 INFO  c.esr.EmployeeSkillRatingApplication - send mail details com.esr.Entity.EmailHistory@3999afc5
+2023-10-09 14:20:22.096 INFO  c.esr.EmployeeSkillRatingApplication - send mail details com.esr.Entity.EmailHistory@5012849c
+2023-10-09 14:20:34.731 INFO  c.esr.EmployeeSkillRatingApplication - send mail details com.esr.Entity.EmailHistory@5539cfa3
+2023-10-09 14:20:41.152 INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
+2023-10-09 14:20:41.189 INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2023-10-09 14:20:41.203 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-10-09 14:20:41.209 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2023-10-09 14:20:41.250 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

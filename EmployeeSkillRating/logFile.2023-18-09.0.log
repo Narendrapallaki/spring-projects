@@ -1,0 +1,27 @@
+2023-10-09 14:18:35.060 INFO  c.esr.EmployeeSkillRatingApplication - Starting EmployeeSkillRatingApplication using Java 17.0.8.1 with PID 17256 (C:\Users\hp\Downloads\EmployeeSkillRating\target\classes started by hp in C:\Users\hp\Downloads\EmployeeSkillRating)
+2023-10-09 14:18:35.079 INFO  c.esr.EmployeeSkillRatingApplication - No active profile set, falling back to 1 default profile: "default"
+2023-10-09 14:18:35.210 INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-10-09 14:18:35.211 INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-10-09 14:18:37.853 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-10-09 14:18:38.018 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 140 ms. Found 4 JPA repository interfaces.
+2023-10-09 14:18:39.704 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2023-10-09 14:18:39.817 INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-10-09 14:18:39.818 INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.13]
+2023-10-09 14:18:40.258 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-10-09 14:18:40.259 INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 5046 ms
+2023-10-09 14:18:41.238 INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-10-09 14:18:41.485 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.9.Final
+2023-10-09 14:18:41.491 INFO  org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2023-10-09 14:18:42.210 INFO  o.h.b.i.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2023-10-09 14:18:42.612 INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2023-10-09 14:18:42.660 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2023-10-09 14:18:46.424 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@14bc5506
+2023-10-09 14:18:46.430 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2023-10-09 14:18:47.243 INFO  o.h.b.i.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2023-10-09 14:18:48.818 INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-10-09 14:18:48.986 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-10-09 14:18:49.482 INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2023-10-09 14:18:50.722 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-10-09 14:18:51.500 INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2023-10-09 14:18:51.641 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2023-10-09 14:18:51.684 INFO  c.esr.EmployeeSkillRatingApplication - Started EmployeeSkillRatingApplication in 17.558 seconds (process running for 19.595)
