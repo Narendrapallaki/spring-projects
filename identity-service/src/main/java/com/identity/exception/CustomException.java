@@ -15,13 +15,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.identity.dto.ErrorHandle;
 
 @RestControllerAdvice
-public class CustomException extends ResponseEntityExceptionHandler {
+public class CustomException  {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> exceptionHandle(Exception ex) {
 		ErrorHandle error=new ErrorHandle();
 		 error.message = ex.getMessage();
-		 error.details="";
+		 error.details="Somethig went wrong";
 		 error.date=LocalDate.now();
 		 error.status=HttpStatus.BAD_GATEWAY;
 		
