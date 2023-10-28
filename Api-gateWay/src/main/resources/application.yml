@@ -1,0 +1,53 @@
+ 
+server:
+  port: 2002
+  
+spring:
+ application:
+    name: API-GATEWAY
+ cloud:
+    gateway:
+      routes:
+        - id: EMPLOYEE-SERVICE  
+          uri: lb://EMPLOYEE-SERVICE  
+          predicates:
+            - Path=/emp/**
+          filters:
+             - ConfigFilter
+        - id: MANAGER-SERVICE  
+          uri: lb://MANAGER-SERVICE  
+          predicates:
+            - Path=/manager/** 
+          filters:
+             - ConfigFilter
+            
+            
+        - id: LEAVES-SERVICE  
+          uri: lb://LEAVES-SERVICE  
+          predicates:
+            - Path=/leave/**
+          filters:
+             - ConfigFilter
+           
+        - id: AUTH-SERVICE  
+          uri: lb://AUTH-SERVICE  
+          predicates:
+            - Path=/auth/**
+            
+        - id: IDENTIFY-SERVICE 
+          uri: lb://IDENTIFY-SERVICE   
+          predicates:
+            - Path=/security/**     
+            
+    
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+     defaultZone: http://localhost:8761/eureka/
+     
+  instance:
+    hostname: localhost
+      
+    
