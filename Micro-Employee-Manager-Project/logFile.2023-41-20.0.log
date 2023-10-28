@@ -1,0 +1,6 @@
+2023-10-20 11:41:00.250 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-10-20 11:41:00.253 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2023-10-20 11:41:00.255 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2023-10-20 11:41:00.478 INFO  c.E.M.Service.ManagerServiceImp - ManagerEntity going to save : ManagerEntity(manaid=2, empid=10, managerId=17, working=trainee, skill=aws, startDate=2023-05-09, endDate=2023-06-09, modifiedBy=5, createdBy=6)
+2023-10-20 11:41:00.478 INFO  c.E.M.Controller.ManagerController - manager entity data getting from service !!
+2023-10-20 11:41:00.479 INFO  c.E.M.Controller.ManagerController - response sent:{result=Success, Message=Manager data saveed !!, status=201 CREATED}
