@@ -27,7 +27,9 @@ public class AuthConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.csrf().disable().authorizeHttpRequests()
-				.requestMatchers("/security/register", "/security/token", "/security/validate","/security/welcome").permitAll().and().build();
+				.requestMatchers("/security/register", "/security/token", "/security/validate").permitAll()
+			//	.requestMatchers("/security/welcome").hasRole("Admin").anyRequest().authenticated()
+				.and().build();
 				
 	}
 

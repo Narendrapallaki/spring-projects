@@ -21,6 +21,7 @@ import com.Eidiko.Employee.Entity.AccessRole;
 import com.Eidiko.Employee.Entity.EmpLeave;
 import com.Eidiko.Employee.Entity.LeaveType;
 import com.Eidiko.Employee.Exception.ResourceNotFoundException;
+import com.Eidiko.Employee.LeaveRange.LeaveRange;
 import com.Eidiko.Employee.Service.LeaveService;
 import com.Eidiko.Employee.Service.LeaveServiceImpl;
 import com.Eidiko.Employee.vo.leaveToEmployee;
@@ -300,5 +301,31 @@ public class EmpLeaveController {
 			throw new ResourceNotFoundException("Data is Null");
 		}
 	}
+	@Autowired
+	private LeaveServiceImpl impl;
+	
+	@PostMapping("/saveRange")
+	public ResponseEntity<Map<String, Object>> saveLeaveRange(@RequestBody LeaveRange leaveRange){
+		LeaveRange saveLeaveRange = impl.saveLeaveRange(leaveRange);
+		if(saveLeaveRange!=null) {
+		response.put("Data",saveLeaveRange);
+		response.put("status", HttpStatus.CREATED);
+		response.put("result", "Success");
+		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.OK);
+		}else {
+			throw new RuntimeException("wrong data");
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

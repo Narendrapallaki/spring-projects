@@ -1,5 +1,8 @@
 package com.Eidiko.Employee.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,13 +21,13 @@ import com.Eidiko.Employee.Entity.AccessRole;
 import com.Eidiko.Employee.Entity.EmpLeave;
 import com.Eidiko.Employee.Entity.LeaveType;
 import com.Eidiko.Employee.Exception.IdNotFoundException;
+import com.Eidiko.Employee.LeaveRange.LeaveRange;
 import com.Eidiko.Employee.Repository.AccessLevelRepository;
 import com.Eidiko.Employee.Repository.AccessRoleRepository;
 import com.Eidiko.Employee.Repository.EmpLeaveRepository;
+import com.Eidiko.Employee.Repository.LeavaeReange;
 import com.Eidiko.Employee.Repository.LeaveTypeRepository;
 import com.Eidiko.Employee.vo.leaveToEmployee;
-
-
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -126,6 +129,7 @@ public class LeaveServiceImpl implements LeaveService {
 		return accessRoleRepo.findById(accessRoleId)
 				.orElseThrow(() -> new RuntimeException("AccessRole is Not Available"));
 	}
+
 //get empleave details based on leaveid
 	@Override
 	public EmpLeave getEmpLeave(Long leaveId) {
@@ -165,16 +169,11 @@ public class LeaveServiceImpl implements LeaveService {
 	@Override
 	public List<EmpLeave> getAllEmpLeave() {
 		List<EmpLeave> empLeave = empLeaveRepo.findAll();
-		
-		
-		
+
 		if (empLeave.isEmpty()) {
 			throw new IdNotFoundException("EmpLeave Data not Available");
 		} else {
-			
-			
-			
-			
+
 			return empLeave;
 		}
 	}
@@ -207,20 +206,19 @@ public class LeaveServiceImpl implements LeaveService {
 		cc.setVariable("reason", findById.getLeaveReason());
 		String process = engine.process("leave-template.html", cc);
 		helper.setTo(tomail);
-		//String serviceUrl = "http://EMPLOYEE-SERVICE/emp/getById/" + findByManaid.getEmpid();
-		String url="https://EMPLOYEE-SERVICE/emp/get/"+empId;
+		// String serviceUrl = "http://EMPLOYEE-SERVICE/emp/getById/" +
+		// findByManaid.getEmpid();
+		String url = "https://EMPLOYEE-SERVICE/emp/get/" + empId;
 		String object = restTemplate.getForObject(url, String.class);
-	//	System.out.println(object);
-		
-		
-		
-		//String[] myArray = { "narendrapallaki@gmail.com", "pallaki.narendra2001@gmail.com" };
+		// System.out.println(object);
 
+		// String[] myArray = { "narendrapallaki@gmail.com",
+		// "pallaki.narendra2001@gmail.com" };
+    
 		InternetAddress[] ccAddresses = new InternetAddress[2];
 
-		
-		 ccAddresses[0] = new InternetAddress(object);
-         ccAddresses[1] = new InternetAddress("pallaki.narendra2001@gmail.com");
+		ccAddresses[0] = new InternetAddress(object);
+		ccAddresses[1] = new InternetAddress("pallaki.narendra2001@gmail.com");
 //		for (int i = 0; i < myArray.length; i++) {
 //			ccAddresses[i] = new InternetAddress(myArray[i]);
 //		}
@@ -234,27 +232,56 @@ public class LeaveServiceImpl implements LeaveService {
 	@Override
 	public Object updateLeave(long leaveid) {
 
- EmpLeave empLeave2 = empLeaveRepo.findById(leaveid).orElseThrow(()->new RuntimeException("Id not found in database"));
-		//EmpLeave appro = empLeaveRepo.findByEmpId(empid).get(0);
+		EmpLeave empLeave2 = empLeaveRepo.findById(leaveid)
+				.orElseThrow(() -> new RuntimeException("Id not found in database"));
+		// EmpLeave appro = empLeaveRepo.findByEmpId(empid).get(0);
 		empLeave2.setStatus("approved");
-	EmpLeave save = empLeaveRepo.save(empLeave2);
+		EmpLeave save = empLeaveRepo.save(empLeave2);
 		return save;
 	}
-	
-	
+
 	public List<EmpLeave> getPendingLeaves(String status) {
-		
+
 		List<EmpLeave> ab = empLeaveRepo.findByStatus(status);
 		return ab;
-		
+
 	}
 	
+	@Autowired
+	private LeavaeReange leavaeReange;
 	
 	
-	
-	
-	
-	
-	
+	public LeaveRange saveLeaveRange(LeaveRange lr)
+	{
+		
+		LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(26);
+		LocalDate endDate = LocalDate.now().withDayOfMonth(25);
+
+		
+		//LocalDate now = LocalDate.parse("2023-10-25");
+		
+		LocalDate createDate = lr.getCreateDate();
+		
+		if (createDate.isAfter(endDate)) {
+
+			System.out.println("false");
+		} else {
+
+			LocalDateTime now1 = LocalDateTime.now();
+			LocalDateTime cutoffTime = LocalDateTime.of(createDate, LocalTime.of(19, 0));
+
+			if (now1.isBefore(cutoffTime)) {
+				System.out.println("approved");
+
+			} else {
+				System.out.println("after 4pm");
+			}
+
+		}
+		
+		LeaveRange save = leavaeReange.save(lr);
+		return save;
+		
+	}
 
 }

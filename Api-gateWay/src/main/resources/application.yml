@@ -38,7 +38,11 @@ spring:
           uri: lb://IDENTIFY-SERVICE   
           predicates:
             - Path=/security/**     
-            
+        - id: access-level
+          uri: lb://access-level
+          predicates:
+            - Path=/access/**
+             
     
 eureka:
   client:
