@@ -26,7 +26,8 @@ import com.Eidiko.Employee.Service.LeaveServiceImpl;
 import com.Eidiko.Employee.vo.leaveToEmployee;
 
 import jakarta.mail.MessagingException;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @RestController
 @RequestMapping("/leave")
 public class EmpLeaveController {
@@ -49,6 +50,7 @@ public class EmpLeaveController {
 		response.put("Message", "EmpLeave data saveed !!");
 		response.put("status", HttpStatus.CREATED);
 		response.put("result", "Success");
+		log.info("Save the employee leave", empLeave);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 
@@ -62,7 +64,7 @@ public class EmpLeaveController {
 		response.put("Message", "Data deleted in db!!");
 		response.put("status", HttpStatus.CREATED);
 		response.put("result", "Success");
-
+        log.info("Delete the leave by leave id");
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
@@ -77,7 +79,7 @@ public class EmpLeaveController {
         response.put("Message", "Date updated in db!!");
         response.put("status", updateLeave);
         response.put("result", "Success");
-
+        log.info("Update the employee statud ",updateLeave);
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
@@ -116,6 +118,7 @@ public class EmpLeaveController {
 			response.put("Data", pendingLeaves);
 			response.put("status", HttpStatus.OK);
 			response.put("result", "Success");
+			log.info("Pending leaves by using status",pendingLeaves);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 		} else {
 			throw new ResourceNotFoundException("Data is Null");

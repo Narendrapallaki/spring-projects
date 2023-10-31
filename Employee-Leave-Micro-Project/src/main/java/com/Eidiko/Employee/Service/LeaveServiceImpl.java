@@ -22,10 +22,10 @@ import com.Eidiko.Employee.Entity.EmpLeave;
 
 import com.Eidiko.Employee.Exception.IdNotFoundException;
 
-import com.Eidiko.Employee.LeaveRange.LeaveRange;
+
 
 import com.Eidiko.Employee.Repository.EmpLeaveRepository;
-import com.Eidiko.Employee.Repository.LeavaeReange;
+
 
 import com.Eidiko.Employee.vo.leaveToEmployee;
 
@@ -62,18 +62,6 @@ public class LeaveServiceImpl implements LeaveService {
 		return lte;
 
 	}
-
-	@Override
-	public EmpLeave getEmpLeaveDetails(long leaveid) {
-
-		EmpLeave leave = empLeaveRepo.findByLeaveid(leaveid);
-		return null;
-
-	}
-
-	// save Entity -----------
-
-	
 	@Override
 	public String saveEmpLeave(EmpLeave empLeave) {
 
@@ -130,17 +118,7 @@ public class LeaveServiceImpl implements LeaveService {
 			}
 
 			}	
-
-		
-		
-		
-		
-		
-		
-
-		
-
-		//System.out.println(save.toString());
+//System.out.println(save.toString());
 
 //		try {
 //			// String s="ht@gmail.com";
@@ -154,7 +132,6 @@ public class LeaveServiceImpl implements LeaveService {
 		//return save;
 	}
 
-	
 
 //get empleave details based on leaveid
 	@Override

@@ -16,7 +16,6 @@ public interface LeaveService {
 
 public Object updateLeave(Long leaveid,String status) throws MessagingException;
 
-public EmpLeave getEmpLeaveDetails(long leaveid);
 	
 
 public EmpLeave getEmpLeave(Long leaveId);
