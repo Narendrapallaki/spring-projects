@@ -3,6 +3,7 @@ package com.Eidiko.Employee.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,17 +17,16 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.Eidiko.Employee.Entity.AccessLevel;
-import com.Eidiko.Employee.Entity.AccessRole;
+
 import com.Eidiko.Employee.Entity.EmpLeave;
-import com.Eidiko.Employee.Entity.LeaveType;
+
 import com.Eidiko.Employee.Exception.IdNotFoundException;
+import com.Eidiko.Employee.Exception.MonthlyLeaveExpiredException;
 import com.Eidiko.Employee.LeaveRange.LeaveRange;
-import com.Eidiko.Employee.Repository.AccessLevelRepository;
-import com.Eidiko.Employee.Repository.AccessRoleRepository;
+
 import com.Eidiko.Employee.Repository.EmpLeaveRepository;
 import com.Eidiko.Employee.Repository.LeavaeReange;
-import com.Eidiko.Employee.Repository.LeaveTypeRepository;
+
 import com.Eidiko.Employee.vo.leaveToEmployee;
 
 import jakarta.mail.MessagingException;
@@ -38,14 +38,8 @@ public class LeaveServiceImpl implements LeaveService {
 
 	Logger log = LoggerFactory.getLogger(LeaveServiceImpl.class);
 	@Autowired
-	private AccessLevelRepository accessLevelRepo;
-	@Autowired
-	private AccessRoleRepository accessRoleRepo;
-	@Autowired
 	private EmpLeaveRepository empLeaveRepo;
-	@Autowired
-	private LeaveTypeRepository leaveTypeRepo;
-
+	
 	@Autowired
 	private JavaMailSender javaMailSender;
 
@@ -79,56 +73,84 @@ public class LeaveServiceImpl implements LeaveService {
 
 	// save Entity -----------
 
+	
 	@Override
-	public AccessLevel saveAccessLevel(AccessLevel accessLevel) {
-
-		return accessLevelRepo.save(accessLevel);
-
-	}
-
-	@Override
-	public AccessRole saveAccessRole(AccessRole accessRole) {
-		return accessRoleRepo.save(accessRole);
-	}
-
-	@Override
-	public EmpLeave saveEmpLeave(EmpLeave empLeave) {
+	public String saveEmpLeave(EmpLeave empLeave) {
 
 		log.info("Inside saveEmpLeave serviceImple");
+		
+		
+		
+		LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(26);
+		LocalDate endDate = LocalDate.now().withDayOfMonth(25);
 
-		EmpLeave save = empLeaveRepo.save(empLeave);
+	//	LocalDate now = LocalDate.parse("2023-10-25");
+		LocalDate now = LocalDate.now();
+		System.out.println(now);
+		
+		empLeave.setCreateDate(now);
+		       //   String s="2023-10-23";
+	//	LocalDateTime ldt=LocalDateTime.parse("2023-10-25");
+		if (now.isAfter(endDate)) {
+           
+			//System.out.println("false");
+			throw new RuntimeException("Monthly leave experied");
+			// throw new MonthlyLeaveExpiredException("Monthly leave expired");
+		} else {
 
-		System.out.println(save.toString());
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
-		try {
-			// String s="ht@gmail.com";
-			sendMail("narendrapallaki2018@gmail.com", "Leave Letter", save.getEmpId());
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("inside save leave");
+			LocalDateTime cutoffTime = LocalDateTime.of(now, LocalTime.of(11, 30));
+			String formattedCutoffTime = cutoffTime.format(formatter);
 
-		return save;
+			LocalDateTime now1 = LocalDateTime.now();
+			String formattedNow = now1.format(formatter);
+	        System.out.println(formattedNow+"vs"+formattedCutoffTime);
+	        if (formattedNow.compareTo(formattedCutoffTime) < 0) {
+			    System.out.println("Leave application accepted");
+			    
+			   // leavaeReange.save(empLeave);
+			   EmpLeave save = empLeaveRepo.save(empLeave);
+			   try {
+					// String s="ht@gmail.com";
+					sendMail("narendrapallaki2018@gmail.com", "Leave Letter", save.getEmpId());
+				} catch (MessagingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			    return "Leave application accepted";
+			    
+			} else {
+			    System.out.println("Leave not accepted after 4 PM on the 25th");
+			    return "Leave not accepted after 4pm on the 25th";
+			}
+
+			}	
+
+		
+		
+		
+		
+		
+		
+
+		
+
+		//System.out.println(save.toString());
+
+//		try {
+//			// String s="ht@gmail.com";
+//			sendMail("narendrapallaki2018@gmail.com", "Leave Letter", save.getEmpId());
+//		} catch (MessagingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+	//	System.out.println("inside save leave");
+
+		//return save;
 	}
 
-	@Override
-	public LeaveType saveLeaveType(LeaveType leaveType) {
-		return leaveTypeRepo.save(leaveType);
-	}
-
-	// get data by id -------------------
-	@Override
-	public AccessLevel getAccessLevel(Long accessLevelId) {
-		return accessLevelRepo.findById(accessLevelId)
-				.orElseThrow(() -> new RuntimeException("AccessLevel is Not Available"));
-	}
-
-	@Override
-	public AccessRole getAccessRole(Long accessRoleId) {
-		return accessRoleRepo.findById(accessRoleId)
-				.orElseThrow(() -> new RuntimeException("AccessRole is Not Available"));
-	}
+	
 
 //get empleave details based on leaveid
 	@Override
@@ -139,32 +161,7 @@ public class LeaveServiceImpl implements LeaveService {
 		return orElseThrow;
 	}
 
-	@Override
-	public LeaveType getLeaveType(Long id) {
-		return leaveTypeRepo.findById(id).orElseThrow(() -> new IdNotFoundException("LeaveType id is Not Available"));
-	}
-
-	// get All Entity Data
-	@Override
-	public List<AccessLevel> getAllAccessLevel() {
-
-		List<AccessLevel> accessLevel = accessLevelRepo.findAll();
-		if (accessLevel.isEmpty()) {
-			throw new IdNotFoundException("Accesslevel Data not Available");
-		} else {
-			return accessLevel;
-		}
-	}
-
-	@Override
-	public List<AccessRole> getAllAccessRole() {
-		List<AccessRole> accessRole = accessRoleRepo.findAll();
-		if (accessRole.isEmpty()) {
-			throw new IdNotFoundException("AccessRole Data not Available");
-		} else {
-			return accessRole;
-		}
-	}
+	
 
 	@Override
 	public List<EmpLeave> getAllEmpLeave() {
@@ -178,15 +175,7 @@ public class LeaveServiceImpl implements LeaveService {
 		}
 	}
 
-	@Override
-	public List<LeaveType> getAllLeaveType() {
-		List<LeaveType> leaveType = leaveTypeRepo.findAll();
-		if (leaveType.isEmpty()) {
-			throw new IdNotFoundException("LeaveType Data not Available");
-		} else {
-			return leaveType;
-		}
-	}
+	
 
 	public void leaveDelete(long leaveid) {
 		empLeaveRepo.deleteById(leaveid);
@@ -251,37 +240,47 @@ public class LeaveServiceImpl implements LeaveService {
 	private LeavaeReange leavaeReange;
 	
 	
-	public LeaveRange saveLeaveRange(LeaveRange lr)
+	public String saveLeaveRange(LeaveRange lr)
 	{
 		
 		LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(26);
 		LocalDate endDate = LocalDate.now().withDayOfMonth(25);
 
 		
-		//LocalDate now = LocalDate.parse("2023-10-25");
+	//	LocalDate now = LocalDate.parse("2023-10-25");
+		LocalDate now = LocalDate.now();
+		System.out.println(now);
 		
-		LocalDate createDate = lr.getCreateDate();
-		
-		if (createDate.isAfter(endDate)) {
-
-			System.out.println("false");
+		lr.setCreateDate(now);
+		       //   String s="2023-10-23";
+	//	LocalDateTime ldt=LocalDateTime.parse("2023-10-25");
+		if (now.isAfter(endDate)) {
+           
+			//System.out.println("false");
+			throw new RuntimeException("Monthly leave experied");
+			// throw new MonthlyLeaveExpiredException("Monthly leave expired");
 		} else {
 
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+			LocalDateTime cutoffTime = LocalDateTime.of(now, LocalTime.of(16, 0));
+			String formattedCutoffTime = cutoffTime.format(formatter);
+
 			LocalDateTime now1 = LocalDateTime.now();
-			LocalDateTime cutoffTime = LocalDateTime.of(createDate, LocalTime.of(19, 0));
-
-			if (now1.isBefore(cutoffTime)) {
-				System.out.println("approved");
-
+			String formattedNow = now1.format(formatter);
+	        System.out.println(formattedNow+"vs"+formattedCutoffTime);
+	        if (formattedNow.compareTo(formattedCutoffTime) < 0) {
+			    System.out.println("Leave application accepted");
+			    
+			    leavaeReange.save(lr);
+			    return "Leave application accepted";
+			    
 			} else {
-				System.out.println("after 4pm");
+			    System.out.println("Leave not accepted after 4 PM on the 25th");
+			    return "Leave not accepted after 4pm on the 25th";
 			}
 
-		}
-		
-		LeaveRange save = leavaeReange.save(lr);
-		return save;
-		
+			}	
 	}
 
 }
