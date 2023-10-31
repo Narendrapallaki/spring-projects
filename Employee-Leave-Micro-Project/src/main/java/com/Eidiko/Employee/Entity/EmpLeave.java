@@ -18,7 +18,7 @@ public class EmpLeave {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long leaveid;
+	private Long leaveid;
 	private long empId;
 	private String leaveReason;
 	private String createdBy;

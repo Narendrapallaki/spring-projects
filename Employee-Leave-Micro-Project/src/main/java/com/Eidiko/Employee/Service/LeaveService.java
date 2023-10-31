@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.Eidiko.Employee.Entity.EmpLeave;
 
+import jakarta.mail.MessagingException;
+
 
 public interface LeaveService {
 
@@ -12,12 +14,10 @@ public interface LeaveService {
 
 
 
-public Object updateLeave(long leaveid);
-
-  // public void leaveDelete(long empId);
+public Object updateLeave(Long leaveid,String status) throws MessagingException;
 
 public EmpLeave getEmpLeaveDetails(long leaveid);
-	//get By Id
+	
 
 public EmpLeave getEmpLeave(Long leaveId);
 

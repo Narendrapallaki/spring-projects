@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Eidiko.Employee.Entity.EmpLeave;
@@ -24,6 +25,8 @@ import com.Eidiko.Employee.Service.LeaveService;
 import com.Eidiko.Employee.Service.LeaveServiceImpl;
 import com.Eidiko.Employee.vo.leaveToEmployee;
 
+import jakarta.mail.MessagingException;
+
 @RestController
 @RequestMapping("/leave")
 public class EmpLeaveController {
@@ -32,6 +35,9 @@ public class EmpLeaveController {
 	private LeaveService leaveService;
 	@Autowired
 	public LeaveServiceImpl leaveImp;
+	
+	@Autowired
+	public LeaveServiceImpl leaveServiceImpl;
 
 	Map<String, Object> response = new HashMap<>();
 
@@ -46,29 +52,7 @@ public class EmpLeaveController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 
-	@PutMapping("/approved/{leaveid}")
-	public ResponseEntity<Map<String, Object>> approvidLeave(@PathVariable long leaveid) {
-		Object updateLeave = leaveService.updateLeave(leaveid);
 
-		if (updateLeave != null) {
-
-			response.put("Message", "Your leave status is updated !!");
-			response.put("status", HttpStatus.CREATED);
-			response.put("result", updateLeave);
-
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
-		} else {
-
-			response.put("Message", "Your leave status is issuess !!");
-			response.put("status", HttpStatus.BAD_REQUEST);
-			response.put("error", updateLeave);
-
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
-
-		}
-		// return null;
-
-	}
 
 	@DeleteMapping("/deleteById/{leaveid}")
 	public ResponseEntity<Map<String, Object>> deleteByLeaveId(@PathVariable long leaveid) {
@@ -82,23 +66,22 @@ public class EmpLeaveController {
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
-	@PutMapping("/updateById/{leaveid}")
-	public ResponseEntity<Map<String, Object>> updateById(@RequestBody EmpLeave empLeave, @PathVariable long leaveid) {
+	@PutMapping("/updateLeaveStatus")
+	public ResponseEntity<Map<String, Object>> updateById(@RequestParam("status") String status, @RequestParam("leaveid") long leaveid) throws MessagingException {
 
-//		
-//		
-//		//EmpLeave updateLeave = leaveService.updateLeave(empLeave, leaveid);
-//		System.out.println(updateLeave);
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("Message", "Date updated in db!!");
-//        response.put("status", updateLeave);
-//        response.put("result", "Success");
+		
+		
+	 Object updateLeave = leaveService.updateLeave(leaveid,status);
+		System.out.println(updateLeave);
+        Map<String, Object> response = new HashMap<>();
+        response.put("Message", "Date updated in db!!");
+        response.put("status", updateLeave);
+        response.put("result", "Success");
 
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
-	@Autowired
-	public LeaveServiceImpl leaveServiceImpl;
+	
 
 	@GetMapping("/getleave/{leaveid}")
 	public ResponseEntity<Map<String, Object>> getEmpToleave(@PathVariable Long leaveid) {
@@ -152,7 +135,7 @@ public class EmpLeaveController {
 		}
 	}
 
-	@Autowired
+/*	@Autowired
 	private LeaveServiceImpl impl;
 
 	@PostMapping("/saveRange")
@@ -169,6 +152,6 @@ public class EmpLeaveController {
 		} else {
 			throw new RuntimeException("wrong data");
 		}
-	}
+	}*/
 
 }

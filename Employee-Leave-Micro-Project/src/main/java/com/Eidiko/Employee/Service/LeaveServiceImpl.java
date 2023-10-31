@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import com.Eidiko.Employee.Entity.EmpLeave;
 
 import com.Eidiko.Employee.Exception.IdNotFoundException;
-import com.Eidiko.Employee.Exception.MonthlyLeaveExpiredException;
+
 import com.Eidiko.Employee.LeaveRange.LeaveRange;
 
 import com.Eidiko.Employee.Repository.EmpLeaveRepository;
@@ -77,16 +77,15 @@ public class LeaveServiceImpl implements LeaveService {
 	@Override
 	public String saveEmpLeave(EmpLeave empLeave) {
 
-		log.info("Inside saveEmpLeave serviceImple");
-		
-		
-		
+		log.info("Inside saveEmpLeave serviceImple");		
 		LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(26);
-		LocalDate endDate = LocalDate.now().withDayOfMonth(25);
+		LocalDate endDate = LocalDate.now().withDayOfMonth(31);
 
 	//	LocalDate now = LocalDate.parse("2023-10-25");
-		LocalDate now = LocalDate.now();
-		System.out.println(now);
+//		LocalDate now = LocalDate.now();
+//		System.out.println(now);
+		
+		LocalDate now = LocalDate.parse("2023-10-26");
 		
 		empLeave.setCreateDate(now);
 		       //   String s="2023-10-23";
@@ -100,13 +99,18 @@ public class LeaveServiceImpl implements LeaveService {
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
-			LocalDateTime cutoffTime = LocalDateTime.of(now, LocalTime.of(11, 30));
+			LocalDateTime cutoffTime = LocalDateTime.of(now, LocalTime.of(15, 40));
 			String formattedCutoffTime = cutoffTime.format(formatter);
 
-			LocalDateTime now1 = LocalDateTime.now();
-			String formattedNow = now1.format(formatter);
-	        System.out.println(formattedNow+"vs"+formattedCutoffTime);
-	        if (formattedNow.compareTo(formattedCutoffTime) < 0) {
+//			LocalDateTime now1 = LocalDateTime.now();
+//			String formattedNow = now1.format(formatter);
+			
+			  LocalDateTime dateTime = LocalDateTime.parse("2023-10-26T11:45", formatter);
+
+			  String format = dateTime.format(formatter);
+			
+	        System.out.println(format+"vs"+formattedCutoffTime);
+	        if (format.compareTo(formattedCutoffTime) < 0) {
 			    System.out.println("Leave application accepted");
 			    
 			   // leavaeReange.save(empLeave);
@@ -219,24 +223,43 @@ public class LeaveServiceImpl implements LeaveService {
 	}
 
 	@Override
-	public Object updateLeave(long leaveid) {
+	public Object updateLeave(Long leaveid,String status) throws MessagingException {
 
 		EmpLeave empLeave2 = empLeaveRepo.findById(leaveid)
 				.orElseThrow(() -> new RuntimeException("Id not found in database"));
-		// EmpLeave appro = empLeaveRepo.findByEmpId(empid).get(0);
-		empLeave2.setStatus("approved");
+		empLeave2.setStatus(status);
+		
+		String url = "https://EMPLOYEE-SERVICE/emp/get/" + empLeave2.getEmpId();
+		String object = restTemplate.getForObject(url, String.class);
+		
+		System.out.println("Employee mail :"+object);
+		
+
+	       MimeMessage createMimeMessage = javaMailSender.createMimeMessage();
+	       MimeMessageHelper mimeMessageHelper=new MimeMessageHelper(createMimeMessage, true);
+	         
+	  //     mimeMessageHelper.setTo("pallaki.narendra2001@gmail.com");
+	       mimeMessageHelper.setTo(object);
+	       mimeMessageHelper.setSubject("Leave status");    
+	       Context cc = new Context();
+	       cc.setVariable("status", status);
+	       String process = engine.process("Aproved-leave.html", cc);
+	       mimeMessageHelper.setText(process, true);
+	       javaMailSender.send(createMimeMessage);	  
+		
 		EmpLeave save = empLeaveRepo.save(empLeave2);
 		return save;
 	}
+	
 
 	public List<EmpLeave> getPendingLeaves(String status) {
 
 		List<EmpLeave> ab = empLeaveRepo.findByStatus(status);
 		return ab;
-
+    
 	}
-	
-	@Autowired
+	//--------------------------------------
+/*	@Autowired
 	private LeavaeReange leavaeReange;
 	
 	
@@ -244,11 +267,11 @@ public class LeaveServiceImpl implements LeaveService {
 	{
 		
 		LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(26);
-		LocalDate endDate = LocalDate.now().withDayOfMonth(25);
+		LocalDate endDate = LocalDate.now().withDayOfMonth(31);
 
 		
-	//	LocalDate now = LocalDate.parse("2023-10-25");
-		LocalDate now = LocalDate.now();
+		LocalDate now = LocalDate.parse("2023-10-25");
+		//LocalDate now = LocalDate.now();
 		System.out.println(now);
 		
 		lr.setCreateDate(now);
@@ -259,11 +282,12 @@ public class LeaveServiceImpl implements LeaveService {
 			//System.out.println("false");
 			throw new RuntimeException("Monthly leave experied");
 			// throw new MonthlyLeaveExpiredException("Monthly leave expired");
-		} else {
+		} 
+		else {
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
-			LocalDateTime cutoffTime = LocalDateTime.of(now, LocalTime.of(16, 0));
+			LocalDateTime cutoffTime = LocalDateTime.of(now, LocalTime.of(15, 0));
 			String formattedCutoffTime = cutoffTime.format(formatter);
 
 			LocalDateTime now1 = LocalDateTime.now();
@@ -275,12 +299,13 @@ public class LeaveServiceImpl implements LeaveService {
 			    leavaeReange.save(lr);
 			    return "Leave application accepted";
 			    
-			} else {
+			} 
+	        else 
+	        {
 			    System.out.println("Leave not accepted after 4 PM on the 25th");
 			    return "Leave not accepted after 4pm on the 25th";
 			}
 
-			}	
-	}
-
+		}	
+	}*/
 }
