@@ -34,6 +34,7 @@ public class EmpContro {
 	@PostMapping("/save")
 	public ResponseEntity<Map<String,Object>>saveEmploye(@RequestBody Employee employee)
 	  {  
+		System.out.println("in side dada");
 		  String employee2 = empSerImp.saveEmployee(employee);
 		  
 		

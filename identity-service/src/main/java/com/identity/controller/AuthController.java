@@ -1,17 +1,22 @@
 package com.identity.controller;
 
+import com.identity.dto.AccessLevel;
 import com.identity.dto.AuthRequest;
+import com.identity.dto.Employee;
 import com.identity.entity.UserCredential;
 import com.identity.service.AuthService;
 
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,9 +34,9 @@ public class AuthController {
     Map<String,Object>response=new HashMap<>();
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String,Object>> addNewUser(@RequestBody UserCredential user) {
+    public ResponseEntity<Map<String,Object>> addNewUser(@RequestBody Employee user) {
     	
-    	UserCredential saveUser = service.saveUser(user);
+    	ResponseEntity<Object> saveUser = service.saveUser(user);
     	
     	if (saveUser!=null) {
     		log.info("user data saved into database");
@@ -83,7 +88,45 @@ public class AuthController {
       
     }
     
+    @PostMapping("/saveroles")
+	public ResponseEntity<Map<String,Object>>saveRole(@RequestBody AccessLevel accessRole)
+	{
+		
+		log.info("********Inside save controller*********");
+		AccessLevel saveRole = service.saveRole(accessRole);	
+		response.put("Message", "User roles are saved in system");
+		response.put("Result", saveRole);
+		response.put("Status code", HttpStatus.OK.value());
+		
+		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.OK);
+		
+	}
+	
+	
+	@GetMapping("/getAllRoles")
+	//@PostAuthorize("hasAuthority('1001')")
+	public ResponseEntity<Map<String,Object>>getAllRoles()
+	{
+		
+		log.info("******Inside getAllRoles controller********");
+		 List<AccessLevel> allRoles = service.getAllRoles();
+		if(allRoles==null)
+		{
+		 throw new RuntimeException("User details not found in db");
+		}
+		else
+		{
+			response.put("Message", "User data fetch from database");
+			response.put("Result", allRoles);
+			response.put("Status code", HttpStatus.OK.value());	
+				return new ResponseEntity<Map<String,Object>>(response,HttpStatus.OK);
+		}
+	}
+    
+    
+   
     @GetMapping("/welcome")
+ //   @PreAuthorize("hasAuthority('1001')")
     public String welcome() {
         return "Welcomer";
     }

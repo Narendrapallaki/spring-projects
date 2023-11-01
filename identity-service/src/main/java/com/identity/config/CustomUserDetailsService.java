@@ -3,6 +3,8 @@ package com.identity.config;
 import com.identity.entity.UserCredential;
 import com.identity.repository.UserCredentialRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,15 +13,21 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UserCredentialRepository repository;
+	@Autowired
+	private UserCredentialRepository repository;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserCredential> credential = repository.findByEmail(username);
-        return credential.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException("user not found with name :" + username));
-    }
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		Optional<UserCredential> credential = repository.findByEmail(username);
+
+		//UserCredential userCredential = credential.get();
+
+		return credential.map(CustomUserDetails::new)
+				.orElseThrow(() -> new UsernameNotFoundException("user not found with name :" + username));
+
+	}
 }
