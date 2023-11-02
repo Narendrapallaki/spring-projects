@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -21,10 +22,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 @Slf4j
 @RestController
 @RequestMapping("/security")
 public class AuthController {
+	
+	
+	 private static final String employeeBasePath="http://localhost:8081/emp";
     @Autowired
     private AuthService service;
 
@@ -32,11 +37,21 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     
     Map<String,Object>response=new HashMap<>();
+    
+    
+    
+    @GetMapping("/itiswork")
+	public String welcom1e() {
+		log.info("*******inside Welcome AuthController");
+		String welcomeOk = service.welcomeOk();
+		log.info("itiswork",welcomeOk);
+		return "Hello This is welcomePage";
+	}
 
     @PostMapping("/register")
     public ResponseEntity<Map<String,Object>> addNewUser(@RequestBody Employee user) {
     	
-    	ResponseEntity<Object> saveUser = service.saveUser(user);
+    	Object saveUser = service.saveUser(user);
     	
     	if (saveUser!=null) {
     		log.info("user data saved into database");
@@ -59,16 +74,18 @@ public class AuthController {
     public ResponseEntity<Map<String,Object>> getToken(@RequestBody AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
-        	    
+               log.info(authRequest.getUsername());
         	String generateToken = service.generateToken(authRequest.getUsername());
         	response.put("Message", "User register details");
     		response.put("Result",generateToken);
     		response.put("Status", HttpStatus.OK.value());
 			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.OK);
           //  return service.generateToken(authRequest.getUsername());
-        } else {
-            throw new RuntimeException("invalid access");
-        }
+       } 
+    //    else {
+//            throw new RuntimeException("invalid access");
+//        }
+		return null;
     }
 
     @GetMapping("/validate")

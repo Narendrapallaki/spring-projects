@@ -53,11 +53,13 @@ public class EmpSerImp implements EmpSerInterface {
 	
 	
 
-	public Employee getByEmail(String email) {
-
-		Employee getemail = empRepo.findByEmail(email).orElseThrow(() -> new EmployeIdNotPresent(email));
+	public Employee getByEmail(String email)  {
+         log.info( email);
+		Employee getemail = empRepo.findByEmail(email).orElseThrow(() -> new EmployeIdNotPresent("Id not found in Db"));;
+		System.out.println(getemail);
+		
+		log.info(getemail.toString());
 		return getemail;
-
 	}
 
 //	@Override

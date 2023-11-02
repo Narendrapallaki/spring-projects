@@ -60,7 +60,7 @@ public class ConfigFilter extends AbstractGatewayFilterFactory<ConfigFilter.Conf
 	 * 
 	 * });
 	 * 
-	 * }
+	 * }------
 	 */
 
 	@Override

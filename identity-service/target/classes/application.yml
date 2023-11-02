@@ -16,7 +16,7 @@ logging:
     console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n'
   
 server:
-  port: 8087
+  port: 8098
 spring:
   datasource:
     password: root
@@ -26,7 +26,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    
+   
   application:
     name: IDENTIFY-SERVICE
 

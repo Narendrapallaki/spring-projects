@@ -1,5 +1,7 @@
 package com.identity.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,70 +12,55 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 @EnableWebSecurity
 
 public class AuthConfig {
 
+	
+	@Autowired
+	private AuthEntryPoint authEntryPoint;
+	
+	@Autowired
+	@Qualifier("handlerExceptionResolver")
+	private HandlerExceptionResolver exceptionResolver;
+	
+	@Bean
+	public JwtAuthenticationFilter authenticationFilter() {
+		return new JwtAuthenticationFilter(exceptionResolver);
+	}
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return new CustomUserDetailsService();
 	}
 
-//	@Bean
-//	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//		return http.csrf().disable().authorizeHttpRequests()
-//				.requestMatchers("/security/register", "/security/token", 
-//						"/security/validate","/security/welcome",
-//						"/security/saveroles","/security/getAllRoles").permitAll()
-//			
-//				.and().build();
-//				
-//	}
-	
-//	@Bean
-//	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//	    return http.csrf().disable()
-//	            .authorizeHttpRequests()
-//	                .requestMatchers("/security/welcome").hasAuthority("1001")
-//	                .anyRequest().authenticated()
-//	            .and().build();
-//	}
-
-	
-	  @Bean
-	    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-	        return http.csrf(AbstractHttpConfigurer::disable)
-	                .authorizeHttpRequests(auth->{
-	                    auth.requestMatchers("/security/register", "/security/token", 
-	"/security/validate").permitAll()
-	                            .requestMatchers("/security/**").hasAuthority("1001").anyRequest().authenticated();
-	                })
-	            //    .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	             //   .authenticationProvider(authenticationProvider())
-	             //   .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
-	                .build();
-	    }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-
+	@Bean
+	public SecurityFilterChain chain(HttpSecurity http) throws Exception {
+		return http.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(authorizeRequests -> authorizeRequests
+						.requestMatchers("/security/register", "/security/token", "/security/validate",
+								"/security/welcome")
+						.permitAll()
+						.requestMatchers("/security/**").hasAnyRole("1005")
+						.requestMatchers("/emp/**").hasAnyRole("1002")
+						.anyRequest().authenticated())
+				
+				.sessionManagement(session->
+				session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.exceptionHandling(ex->
+				ex.authenticationEntryPoint(authEntryPoint))
+				.authenticationProvider(authenticationProvider())
+				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+				.build();
+	}
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

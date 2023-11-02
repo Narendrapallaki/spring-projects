@@ -32,19 +32,45 @@ public class AuthService {
     private JwtService jwtService;
     @Autowired
     private AccessLevelRepo accessLevelRepo;
-    @Autowired
-    private RestTemplate restTemplate;
+   // @Autowired
+   // private RestTemplate restTemplate;
 
-    public ResponseEntity<Object> saveUser(Employee employee) {
+    
+    private static final String employeeBasePath="http://localhost:8081/emp";
+    
+    
+    public String welcomeOk() {
+    	RestTemplate restTemplate = new RestTemplate();
+
+		log.info("*********inside welcome AuthService");
+		return restTemplate.getForObject(employeeBasePath+"/welcome",String.class);
+	}
+    
+    
+    
+    
+    
+    public Object saveUser(Employee employee) {
+    	RestTemplate restTemplate = new RestTemplate();
+
     	log.info("inside hhhiiii***********");
 //        credential.setPassword(passwordEncoder.encode(credential.getPassword()));
 //        UserCredential save = repository.save(credential);
-    	ResponseEntity exchange = restTemplate.exchange("http://localhost:8081/emp/save", HttpMethod.POST, new HttpEntity<>(employee), Object.class);
+    	employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+    	ResponseEntity exchange = restTemplate.exchange(employeeBasePath+"/save", HttpMethod.POST, new HttpEntity<>(employee), Object.class);
     	log.info("out ***********");
-        return exchange;
+        return exchange.getBody();
     }
 
     public String generateToken(String username) {
+    	log.info(username);
+//    	RestTemplate restTemplate=new RestTemplate();
+//        ResponseEntity<Employee> exchange = restTemplate.exchange(employeeBasePath+"/getByMail/"+username, HttpMethod.GET, null,Employee.class );
+//                         Employee body = exchange.getBody();
+//                         log.info(body.toString());
+//                         if (body==null)
+//							throw new RuntimeException("Email not found");
+//    	    log.info(exchange.getBody().toString());
         return jwtService.generateToken(username);
     }
 
@@ -55,7 +81,7 @@ public class AuthService {
     
 	public AccessLevel saveRole(AccessLevel accessRole)
 	{
-		log.info("********Inside save service******");
+		log.info("*---------Inside save service---------*");
 		
 		AccessLevel save = accessLevelRepo.save(accessRole);
 		

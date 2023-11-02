@@ -12,8 +12,8 @@ spring:
           uri: lb://EMPLOYEE-SERVICE  
           predicates:
             - Path=/emp/**
-         # filters:
-        #     - ConfigFilter
+          filters:
+             - ConfigFilter
         - id: MANAGER-SERVICE  
           uri: lb://MANAGER-SERVICE  
           predicates:

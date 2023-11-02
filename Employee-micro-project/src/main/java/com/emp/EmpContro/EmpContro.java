@@ -20,8 +20,10 @@ import com.emp.Entity.Employee;
 import com.emp.eceptions.EmployeIdNotPresent;
 import com.emp.service.EmpSerImp;
 
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/emp")
 public class EmpContro {
@@ -30,6 +32,13 @@ public class EmpContro {
 	public EmpSerImp empSerImp;
 	
 	  Map<String,Object>map=new HashMap<>();
+	  
+	  
+	  @GetMapping("/welcome")
+		public String welcome() {
+			log.info("*******inside Welcome emp coltroller");
+			return "Hello This is welcomePage";
+		}
    
 	@PostMapping("/save")
 	public ResponseEntity<Map<String,Object>>saveEmploye(@RequestBody Employee employee)
@@ -135,7 +144,13 @@ public class EmpContro {
 	@GetMapping("/getByMail/{email}")
 	public Employee getByEmail(@PathVariable String email)
 	{
-		return empSerImp.getByEmail(email);
+		log.info(email);
+		Employee byEmail = empSerImp.getByEmail(email);
+		if (byEmail==null) {
+			log.info("in side get mail");
+			throw new RuntimeException("id not foudn");
+		}
+		return byEmail;
 		
 	}
 	
